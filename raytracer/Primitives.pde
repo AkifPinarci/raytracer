@@ -32,30 +32,31 @@ class Sphere implements SceneObject
             if (this.radius < dist){
                 return result;
             }
+
+            // We can add two rayHit or ignore this case
             // If distance is equal to radius, the ray touches the sphere, and there is only one intersection
-            else if (this.radius == dist){
+            //else if (this.radius == dist){
                 
-                // Intersection is the vector from origin to intersection point, I add the distance from origin to (distance * ray diraction).
-                // This is also the point where the ray touches the sphere. 
-                PVector intersection = PVector.add(r.origin, PVector.mult(r.direction, dotProduct));
+            //    // Intersection is the vector from origin to intersection point, I add the distance from origin to (distance * ray diraction).
+            //    // This is also the point where the ray touches the sphere. 
+            //    PVector intersection = PVector.add(r.origin, PVector.mult(r.direction, dotProduct));
                 
-                // Len
-                float len = dotProduct;
+            //    // Len
+            //    float len = dotProduct;
                 
-                // Not sure if this is entry or not in the touching cases.
-                boolean isEntry = true;
+            //    // Not sure if this is entry or not in the touching cases.
+            //    boolean isEntry = true;
                 
-                // What I do here is, I draw a vector from center of sphere to intersection point. Then I normalize the normal vector.
-                PVector normal = PVector.sub(intersection, this.center);
-                normal = PVector.div(normal, this.radius);
+            //    // What I do here is, I draw a vector from center of sphere to intersection point. Then I normalize the normal vector.
+            //    PVector normal = PVector.sub(intersection, this.center).normalize();
                 
-                RayHit singleHit = new RayHit();
-                singleHit.t = len;
-                singleHit.location = intersection;
-                singleHit.normal = normal;
-                singleHit.entry = isEntry;
-                result.add(singleHit);
-            }
+            //    RayHit singleHit = new RayHit();
+            //    singleHit.t = len;
+            //    singleHit.location = intersection;
+            //    singleHit.normal = normal;
+            //    singleHit.entry = isEntry;
+            //    result.add(singleHit);
+            //}
             
             // else(if the radius os greater than the dist, the ray goes through the sphere)
             else{
@@ -70,13 +71,13 @@ class Sphere implements SceneObject
                 PVector entryPoint = PVector.add(r.origin, PVector.mult(r.direction, distanceToEntry));
                 PVector exitPoint = PVector.add(r.origin, PVector.mult(r.direction, distanceToExit));
                 // Calculate normal vectors for the hit points and normalize them
-                PVector normalAtEntry = PVector.sub(entryPoint, this.center);
-                normalAtEntry = PVector.div(normalAtEntry, this.radius);
+                PVector normalAtEntry = PVector.sub(entryPoint, this.center).normalize();
                 
-                PVector normalAtExit = PVector.sub(exitPoint, this.center);
-                normalAtExit = PVector.div(normalAtExit, this.radius);
+                PVector normalAtExit = PVector.sub(exitPoint, this.center).normalize();
                 // Assign each value to different hits, add them to result and return it
                 
+
+                //
                 RayHit entryHit = new RayHit();
                 entryHit.t = distanceToEntry;
                 entryHit.location = entryPoint;
@@ -91,7 +92,12 @@ class Sphere implements SceneObject
                 exitHit.entry = false;
                 
                 // Add RayHit objects to the resulting array add entry first than add exit
-                result.add(entryHit);
+
+                // If entryHit.t > 0 tehn add it else dont add it
+                if (entryHit.t > 0){
+                    result.add(entryHit);
+                }
+         
                 result.add(exitHit);
             }
         }
