@@ -123,12 +123,27 @@ class Plane implements SceneObject
        this.scale = scale;
        
        // remove this line when you implement planes
-       throw new NotImplementedException("Planes not implemented yet");
     }
     
     ArrayList<RayHit> intersect(Ray r)
     {
         ArrayList<RayHit> result = new ArrayList<RayHit>();
+        
+        float distance = (PVector.dot(PVector.sub(this.center, r.origin), this.normal)/ PVector.dot(r.direction, this.normal));
+        PVector location = PVector.add(r.origin, PVector.mult(r.direction, distance));
+        if (distance > 0){
+            RayHit entry = new RayHit();
+            entry.t = distance;
+            entry.location = location;
+            entry.normal = PVector.mult(this.normal, -1);
+            
+            RayHit exit = new RayHit();
+            exit.t = distance;
+            exit.location = location;
+            exit.normal = this.normal;
+            result.add(entry);
+            result.add(exit);
+        }
         return result;
     }
 }
