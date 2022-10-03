@@ -37,7 +37,7 @@ void draw () {
     }
     for (int i=0; i < width; i++)
     {
-      for(int j=0; j< height; ++j)
+      for(int j=0; j< height; j++)
       {
         color c = rt.getColor(i,j);
         set(i,j,c);
@@ -91,7 +91,7 @@ void draw () {
         out.loadPixels();
         for (int i=0; i < width; i++)
         {
-          for(int j=0; j< height; ++j)
+          for(int j=0; j< height; j++)
           {
             color c = rt.getColor(i,j);
             out.pixels[j*width + i] = c;
@@ -104,8 +104,6 @@ void draw () {
      }
   }
   updatePixels();
-
-
 }
 
 class Ray
@@ -123,46 +121,48 @@ class Ray
 class RayTracer
 {
     Scene scene;
+    Ray[][] raster;
 
     RayTracer(Scene scene)
     {
       int w = 640;
       int h = 640;
-      color[][] raster = new color[w][h];
+      
       PVector origin = new PVector(0, 0, 0);
-
+      this.raster = new Ray[w][h];
+      
       setScene(scene);
       for (int x = 0; x < w; x++) {
         for (int y = 0; y < h; y++) {
             float u = x*1.0/w - 0.5;
-            float v = - (y*1.0/h - 0.5);
+            float v = -(y*1.0/h - 0.5);
             PVector direction = new PVector(u*w, w/2.0, v*h).normalize();
-            Ray ray = new Ray(origin, direction);
-            raster[x][y] = getColor(w, h, ray);
+            this.raster[x][y] = new Ray(origin, direction);
         }
       }
+      println("done");
     }
-
+    
     void setScene(Scene scene)
     {
        this.scene = scene;
     }
-
-    color getColor(int x, int y, Ray ray)
+    
+    color getColor(int x, int y)
     {
       PVector origin = scene.camera;
-      ArrayList<RayHit> hits = scene.root.intersect(ray);
-
+      ArrayList<RayHit> hits = scene.root.intersect(this.raster[x][y]);
+      
       if (hits.size() > 0) {
-        return scene.lighting.getColor(hits.get(0), scene, ray.origin);
+        return scene.lighting.getColor(hits.get(0), scene, origin);
       }
-
+      
       /*if (scene.reflections > 0)
       {
           // remove this line when you implement reflection
           throw new NotImplementedException("Reflection not implemented yet");
       }*/
-
+      
       /// this will be the fallback case
       return this.scene.background;
     }

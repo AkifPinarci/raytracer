@@ -9,9 +9,6 @@ class Sphere implements SceneObject
        this.center = center;
        this.radius = radius;
        this.material = material;
-       
-       // remove this line when you implement spheres
-       //throw new NotImplementedException("Spheres not implemented yet");
     }
     
     ArrayList<RayHit> intersect(Ray r)
@@ -24,11 +21,11 @@ class Sphere implements SceneObject
         if (dotProduct < 0){
             return result;
         }
-        else{
+        else {
             // dist is smallest distance from center of the sphere to ray.
             float dist = sqrt(PVector.dot(originToCenter, originToCenter) - (dotProduct * dotProduct));
             
-            // If this distance is greater than radius, ray is not hitting the sphere
+            // If the radius is smaller than the distance, the ray is not hitting the sphere
             if (this.radius < dist){
                 return result;
             }
@@ -59,7 +56,7 @@ class Sphere implements SceneObject
             //}
             
             // else(if the radius os greater than the dist, the ray goes through the sphere)
-            else{
+            else {
             // There are entrence and exit points on the Sphere
                 // Calculate the distance from closest point to radius. This is the dot product which I already calculated at the top.
                 // Then calculate the distance in the sphere, this is what I alreadt calculated and stored in the dist variable
@@ -82,6 +79,7 @@ class Sphere implements SceneObject
                 entryHit.t = distanceToEntry;
                 entryHit.location = entryPoint;
                 entryHit.normal = normalAtEntry;
+                entryHit.material = this.material;
                 entryHit.entry = true;
                 
                 
@@ -89,11 +87,12 @@ class Sphere implements SceneObject
                 exitHit.t = distanceToExit;
                 exitHit.location = exitPoint;
                 exitHit.normal = normalAtExit;
+                exitHit.material = this.material;
                 exitHit.entry = false;
                 
                 // Add RayHit objects to the resulting array add entry first than add exit
 
-                // If entryHit.t > 0 tehn add it else dont add it
+                // If entryHit.t > 0 then add it, else dont add it
                 if (entryHit.t > 0){
                     result.add(entryHit);
                 }
