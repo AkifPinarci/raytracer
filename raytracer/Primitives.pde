@@ -134,14 +134,14 @@ class Plane implements SceneObject
             RayHit entry = new RayHit();
             entry.t = distance;
             entry.location = location;
-            entry.normal = PVector.mult(this.normal, -1);
-            entry.material = material;
+            entry.normal = PVector.mult(this.normal, 1);
+            entry.material = this.material;
             
             RayHit exit = new RayHit();
             exit.t = distance;
             exit.location = location;
-            exit.normal = this.normal;
-            exit.material = material;
+            exit.normal = PVector.mult(this.normal, -1);
+            exit.material = this.material;
             result.add(entry);
             result.add(exit);
         }
