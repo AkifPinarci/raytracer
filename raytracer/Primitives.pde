@@ -178,6 +178,45 @@ class Triangle implements SceneObject
     ArrayList<RayHit> intersect(Ray r)
     {
         ArrayList<RayHit> result = new ArrayList<RayHit>();
+        PVector edge0 = PVector.sub(this.v3, this.v1);
+        PVector edge1 = PVector.sub(this.v2, this.v1);
+        PVector edge2 = PVector.sub(this.v3, this.v1);
+        
+        float dot00 = PVector.dot(edge0, edge0);
+        float dot01 = PVector.dot(edge0, edge1);
+        float dot02 = PVector.dot(edge0, edge2);
+        float dot11 = PVector.dot(edge1, edge1);
+        float dot12 = PVector.dot(edge1, edge2);
+        
+        float denom = 1 / (dot00 * dot11 - dot01 * dot01);
+        float u = (dot11 * dot02 - dot01 * dot12) * denom;
+        float v = (dot00 * dot12 - dot01 * dot02) * denom;
+        
+        if ((u >= 0) && (v >= 0) && (u + v < 1)){
+            RayHit entry = new RayHit();
+            RayHit exit = new RayHit();
+            
+            PVector location = PVector.add(PVector.mult(edge0, u), PVector.mult(edge1, v));
+            float distance = PVector.dot(PVector.sub(location, r.origin), PVector.sub(location, r.origin));
+            entry.t = distance;
+            entry.location = location;
+            entry.normal = this.normal;
+            entry.material = this.material;
+            entry.u = u;
+            entry.v = v;
+            entry.entry = true;
+            
+            exit.t = distance;
+            exit.location = location;
+            exit.normal = PVector.mult(this.normal, -1);
+            exit.material = this.material;
+            exit.u = u;
+            exit.v = v;
+            exit.entry = false;
+            
+            result.add(entry);
+            result.add(exit);
+        };
         return result;
     }
 }
