@@ -172,15 +172,19 @@ class Triangle implements SceneObject
        this.material = material;
        
        // remove this line when you implement triangles
-       throw new NotImplementedException("Triangles not implemented yet");
+       //throw new NotImplementedException("Triangles not implemented yet");
     }
     
     ArrayList<RayHit> intersect(Ray r)
     {
+        
+        float dist = (PVector.dot(PVector.sub(this.v2, r.origin), this.normal)/ PVector.dot(r.direction, this.normal));
+        PVector p = PVector.add(r.origin, PVector.mult(r.direction, dist));
+        
         ArrayList<RayHit> result = new ArrayList<RayHit>();
         PVector edge0 = PVector.sub(this.v3, this.v1);
         PVector edge1 = PVector.sub(this.v2, this.v1);
-        PVector edge2 = PVector.sub(this.v3, this.v1);
+        PVector edge2 = PVector.sub(p, this.v1);
         
         float dot00 = PVector.dot(edge0, edge0);
         float dot01 = PVector.dot(edge0, edge1);
@@ -196,11 +200,11 @@ class Triangle implements SceneObject
             RayHit entry = new RayHit();
             RayHit exit = new RayHit();
             
-            PVector location = PVector.add(PVector.mult(edge0, u), PVector.mult(edge1, v));
+            PVector location = PVector.add(this.v1, PVector.add(PVector.mult(edge0, u), PVector.mult(edge1, v)));
             float distance = PVector.dot(PVector.sub(location, r.origin), PVector.sub(location, r.origin));
             entry.t = distance;
             entry.location = location;
-            entry.normal = this.normal;
+            entry.normal = PVector.mult(this.normal, 1);
             entry.material = this.material;
             entry.u = u;
             entry.v = v;

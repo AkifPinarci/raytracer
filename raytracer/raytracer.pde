@@ -1,4 +1,4 @@
-String input =  "data/tests/milestone1/test7.json";
+String input =  "data/tests/milestone1/test8.json";
 String output = "data/tests/milestone1/test1.png";
 int repeat = 0;
 
