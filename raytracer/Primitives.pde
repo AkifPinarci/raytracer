@@ -21,6 +21,9 @@ class Sphere implements SceneObject
         if (dotProduct < 0){
             return result;
         }
+        else if(dotProduct < this.radius){
+            return result;
+        }
         else {
             // dist is smallest distance from center of the sphere to ray.
             float dist = sqrt(PVector.dot(originToCenter, originToCenter) - (dotProduct * dotProduct));
@@ -127,23 +130,41 @@ class Plane implements SceneObject
     ArrayList<RayHit> intersect(Ray r)
     {
         ArrayList<RayHit> result = new ArrayList<RayHit>();
-        
-        float distance = (PVector.dot(PVector.sub(this.center, r.origin), this.normal)/ PVector.dot(r.direction, this.normal));
-        PVector location = PVector.add(r.origin, PVector.mult(r.direction, distance));
-        if (distance > 0){
-            RayHit entry = new RayHit();
-            entry.t = distance;
+        float side = PVector.dot(r.direction,this.normal);
+        float originToHit = PVector.dot(PVector.sub(this.center, r.origin),this.normal);
+        if(side == 0)
+        {
+          return result;
+        }
+        float t = originToHit/side;
+        if (t < 0)
+        {
+          return result;
+        }
+        else
+        {
+          PVector location = PVector.add(r.origin, PVector.mult(r.direction, t));
+          if(side < 0)
+          {
+            RayHit entry = new RayHit(); 
+            entry.t = t;
             entry.location = location;
-            entry.normal = PVector.mult(this.normal, 1);
+            entry.normal = normal;
+            entry.entry = true;
             entry.material = this.material;
-            
-            RayHit exit = new RayHit();
-            exit.t = distance;
+            result.add(entry);
+          }
+          else
+          {
+            RayHit exit = new RayHit(); 
+            exit.t = t;
             exit.location = location;
             exit.normal = PVector.mult(this.normal, -1);
-            exit.material = this.material;
-            result.add(entry);
+            exit.entry = false;
+            exit.material = material;
             result.add(exit);
+            
+          }
         }
         return result;
     }

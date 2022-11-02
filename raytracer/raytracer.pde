@@ -1,4 +1,4 @@
-String input =  "data/tests/milestone1/test8.json";
+String input =  "data/tests/milestone2/test13.json";
 String output = "data/tests/milestone1/test1.png";
 int repeat = 0;
 
@@ -153,7 +153,8 @@ class RayTracer
       PVector origin = scene.camera;
       ArrayList<RayHit> hits = scene.root.intersect(this.raster[x][y]);
       
-      if (hits.size() > 0) {
+      if (hits.size() > 0 && hits.get(0).entry) {
+          
         return scene.lighting.getColor(hits.get(0), scene, origin);
       }
       
