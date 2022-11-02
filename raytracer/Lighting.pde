@@ -57,11 +57,43 @@ class PhongLightingModel extends LightingModel
       this.ambient = ambient;
       
       // remove this line when you implement phong lighting
-      throw new NotImplementedException("Phong Lighting Model not implemented yet");
+      //throw new NotImplementedException("Phong Lighting Model not implemented yet");
     }
     color getColor(RayHit hit, Scene sc, PVector viewer)
     {
-      return hit.material.getColor(hit.u, hit.v);
+      MaterialProperties material = hit.material.properties;
+      float ka = material.ka;
+      float kd = material.kd;
+      float ks = material.ks;
+      float alpha = material.alpha;
+      color hitcolor = hit.material.getColor(hit.u, hit.v);
+      color surfacecol = lights.get(0).shine(hitcolor);
+      color newAmb = multColor(scaleColor(hitcolor, ambient), ka);
+      color result = newAmb;
+      for (Light light: this.lights){
+        color diffuse;
+        color specular;
+        PVector Lm;
+        PVector Rm;
+        Lm = PVector.sub(light.position, hit.location).normalize();
+        float dotDiffuse = PVector.dot(Lm, hit.normal);
+        float lightScaler = dotDiffuse;
+        lightScaler = 2 * lightScaler;
+        dotDiffuse = dotDiffuse * kd;
+        diffuse = multColor(light.shine(light.diffuse), dotDiffuse);
+        Rm = PVector.mult(hit.normal, lightScaler);
+        Rm = PVector.sub(Rm, Lm);
+        viewer = PVector.sub(viewer, hit.location).normalize();
+        float rDotV = PVector.dot(Rm, viewer);
+        double power = Math.pow(rDotV, alpha);
+        float nPow = (float) power;
+        nPow = nPow * ks;
+        specular = multColor(light.specular, nPow);
+        result = addColors(result, diffuse);
+        result = addColors(result, specular);
+      }
+      return result;
+      //return hit.material.getColor(hit.u, hit.v);
     }
   
 }

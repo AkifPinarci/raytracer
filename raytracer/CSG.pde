@@ -1,3 +1,4 @@
+
 import java.util.Comparator;
 
 class HitCompare implements Comparator<RayHit>
