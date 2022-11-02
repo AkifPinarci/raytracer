@@ -1,0 +1,42 @@
+{
+  "scene": {
+    "type": "intersection",
+    "children": [
+      {
+        "type": "sphere",
+        "radius": 75,
+        "center": {
+          "x": 0,
+          "y": 250,
+          "z": 0
+        },
+        "material": { "color": { "r": 255 } }
+      },
+      {
+        "type": "union",
+        "children": [
+          {
+            "type": "sphere",
+            "radius": 80,
+            "center": {
+              "x": 80,
+              "y": 225,
+              "z": -30
+            },
+            "material": { "color": { "g": 255 } }
+          },
+          {
+            "type": "sphere",
+            "radius": 80,
+            "center": {
+              "x": 80,
+              "y": 225,
+              "z": 30
+            },
+            "material": { "color": { "b": 255 } }
+          }
+        ]
+      }
+    ]
+  }
+}
