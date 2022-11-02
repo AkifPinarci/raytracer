@@ -67,28 +67,38 @@ class PhongLightingModel extends LightingModel
       float ks = material.ks;
       float alpha = material.alpha;
       color hitcolor = hit.material.getColor(hit.u, hit.v);
-      color surfacecol = lights.get(0).shine(hitcolor);
-      color newAmb = multColor(scaleColor(hitcolor, ambient), ka);
+      color newAmb = multColor(scaleColor(ambient, hitcolor), ka);
       color result = newAmb;
       for (Light light: this.lights){
+        // Every variable that we are planning to use is declared here
         color diffuse;
         color specular;
         PVector Lm;
         PVector Rm;
+        PVector V;
+        // L vector is calculated and then k_d(Lm.N)i_d is calculated and saved into diffuse
         Lm = PVector.sub(light.position, hit.location).normalize();
         float dotDiffuse = PVector.dot(Lm, hit.normal);
+        dotDiffuse = dotDiffuse * kd;
+        diffuse = multColor(light.diffuse, dotDiffuse);
+        
+        // lightScaler is the value of Lm.N, with the next 4 steps we calculated the Rm
         float lightScaler = dotDiffuse;
         lightScaler = 2 * lightScaler;
-        dotDiffuse = dotDiffuse * kd;
-        diffuse = multColor(light.shine(light.diffuse), dotDiffuse);
         Rm = PVector.mult(hit.normal, lightScaler);
-        Rm = PVector.sub(Rm, Lm);
-        viewer = PVector.sub(viewer, hit.location).normalize();
-        float rDotV = PVector.dot(Rm, viewer);
+        Rm = PVector.sub(Rm, Lm).normalize();
+        
+        // Calculated and normalized the V vector
+        V = PVector.sub(viewer, hit.location).normalize();
+        
+        // With the next 5 steps Specular light is calculated which is k_s(Rm.V)^alpha*i_s
+        float rDotV = PVector.dot(Rm, V);
         double power = Math.pow(rDotV, alpha);
         float nPow = (float) power;
         nPow = nPow * ks;
         specular = multColor(light.specular, nPow);
+        
+        
         result = addColors(result, diffuse);
         result = addColors(result, specular);
       }
