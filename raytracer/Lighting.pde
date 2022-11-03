@@ -80,10 +80,10 @@ class PhongLightingModel extends LightingModel
         Lm = PVector.sub(light.position, hit.location).normalize();
         float dotDiffuse = PVector.dot(Lm, hit.normal);
         dotDiffuse = dotDiffuse * kd;
-        diffuse = multColor(light.diffuse, dotDiffuse);
+        diffuse = multColor(light.shine(hitcolor), dotDiffuse);
         
         // lightScaler is the value of Lm.N, with the next 4 steps we calculated the Rm
-        float lightScaler = dotDiffuse;
+        float lightScaler = PVector.dot(Lm, hit.normal);
         lightScaler = 2 * lightScaler;
         Rm = PVector.mult(hit.normal, lightScaler);
         Rm = PVector.sub(Rm, Lm).normalize();
@@ -96,8 +96,15 @@ class PhongLightingModel extends LightingModel
         double power = Math.pow(rDotV, alpha);
         float nPow = (float) power;
         nPow = nPow * ks;
-        specular = multColor(light.specular, nPow);
+        specular = multColor(light.spec(hitcolor), nPow);
         
+        // Shadow implementation
+        Ray hitToLight = new Ray(PVector.add(hit.location, PVector.mult(Lm, EPS)), Lm);
+        ArrayList<RayHit> hitsFromImpact = sc.root.intersect(hitToLight);
+        if(hitsFromImpact.size() > 0 && this.withshadow)
+        {
+          continue;
+        }
         
         result = addColors(result, diffuse);
         result = addColors(result, specular);
