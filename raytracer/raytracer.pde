@@ -121,26 +121,10 @@ class Ray
 class RayTracer
 {
     Scene scene;
-    Ray[][] raster;
 
     RayTracer(Scene scene)
     {
-      int w = 640;
-      int h = 640;
-      
-      PVector origin = new PVector(0, 0, 0);
-      this.raster = new Ray[w][h];
-      
       setScene(scene);
-      for (int x = 0; x < w; x++) {
-        for (int y = 0; y < h; y++) {
-            float u = x*1.0/w - 0.5;
-            float v = -(y*1.0/h - 0.5);
-            PVector direction = new PVector(u*w, w/2.0, v*h).normalize();
-            this.raster[x][y] = new Ray(origin, direction);
-        }
-      }
-      println("done");
     }
     
     void setScene(Scene scene)
@@ -150,19 +134,27 @@ class RayTracer
     
     color getColor(int x, int y)
     {
+      int w = 640;
+      int h = 640;
       PVector origin = scene.camera;
-      ArrayList<RayHit> hits = scene.root.intersect(this.raster[x][y]);
+      
+      float u = x*1.0/w - 0.5;
+      float v = -(y*1.0/h - 0.5);
+      PVector direction = new PVector(u*w, w/2.0, v*h).normalize();
+      Ray ray = new Ray(origin, direction);
+      
+      
+      ArrayList<RayHit> hits = scene.root.intersect(ray);
       
       if (hits.size() > 0 && hits.get(0).entry) {
           
         return scene.lighting.getColor(hits.get(0), scene, origin);
       }
       
-      /*if (scene.reflections > 0)
+      if (scene.reflections > 0)
       {
-          // remove this line when you implement reflection
-          throw new NotImplementedException("Reflection not implemented yet");
-      }*/
+          
+      }
       
       /// this will be the fallback case
       return this.scene.background;
