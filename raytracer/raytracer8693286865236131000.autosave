@@ -1,5 +1,5 @@
-String input =  "data/tests/milestone3/test9.json";
-String output = "data/tests/milestone1/test1.png";
+String input =  "data/tests/milestone3/test10.json";
+String output = "data/tests/milestone3/test10.png";
 int repeat = 0;
 
 int iteration = 0;
@@ -22,7 +22,6 @@ void setup() {
   noLoop();
   if (repeat == 0)
       rt = new RayTracer(loadScene(input));  
-  
 }
 
 void draw () {
@@ -145,18 +144,41 @@ class RayTracer
       
       ArrayList<RayHit> hits = scene.root.intersect(ray);
       
+      Ray reflectionR;
       int i = 0;
-      if (scene.reflections > 0 && i < scene.reflections) {
-        if (hits.get(0).material.properties.reflectiveness >= 1) {
-                RayHit reflectionR = new Rayhit();
-                return reflectionR;
-            } else if (hits.get(0).material.properties.reflectiveness > 0) {
-        }
-    } else if (hits.size() > 0 && hits.get(0).entry) {
-      return scene.lighting.getColor(hits.get(0), scene, origin);
+      if (hits.size() > 0 && hits.get(0).entry) {
+        RayHit hit = hits.get(0);
+        
+        // initialize reflection ray using scene camera.
+        reflectionR = new Ray(scene.camera, scene.view);
+        color displayedColor = scene.lighting.getColor(hit, scene, origin);
+        
+        while (scene.reflections > 0 && i < scene.reflections && hits.size() > 0) {
+          
+          // Calculating reflection ray
+          PVector V = PVector.sub(reflectionR.origin, hit.location).normalize();
+          PVector normalTimes2 = PVector.mult(hit.normal, 2);
+          float nDotV = PVector.dot(hit.normal, V);
+          PVector R = PVector.sub(PVector.mult(normalTimes2, nDotV), V);
+          
+          reflectionR = new Ray(PVector.add(hit.location, PVector.mult(R, EPS)), R);
+              
+          if (hit.material.properties.reflectiveness >= 1) {
+            hits = scene.root.intersect(reflectionR);
+          } else if (hit.material.properties.reflectiveness > 0) {
+            displayedColor = lerpColor(color(0), scene.lighting.getColor(hit, scene, origin), displayedColor);
+            hits = scene.root.intersect(reflectionR);
+          } else {
+            displayedColor = lerpColor(color(0), scene.lighting.getColor(hit, scene, origin), displayedColor);
+            break;
+          }
+          i++;
+       }
+       
+       return displayedColor;
     }
 
-        /// this will be the fallback case
-        return this.scene.background;
+      /// this will be the fallback case
+      return this.scene.background;
     }
 }
