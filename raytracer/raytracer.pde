@@ -134,29 +134,57 @@ class RayTracer
     
     color getColor(int x, int y)
     {
-      int w = 640;
+       int w = 640;
       int h = 640;
       PVector origin = scene.camera;
       
       float u = x*1.0/w - 0.5;
       float v = -(y*1.0/h - 0.5);
-      PVector direction = new PVector(u*w, w/2.0, v*h).normalize();
+      PVector direction = new PVector(u, w/2.0, v).normalize();
       Ray ray = new Ray(origin, direction);
-      
+
       ArrayList<RayHit> hits = scene.root.intersect(ray);
-      
+
+      Ray reflectionR;
       int i = 0;
-      if (scene.reflections > 0 && i < scene.reflections) {
-        if (hits.get(0).material.properties.reflectiveness >= 1) {
-                RayHit reflectionR = new Rayhit();
-                return reflectionR;
-            } else if (hits.get(0).material.properties.reflectiveness > 0) {
-        }
-    } else if (hits.size() > 0 && hits.get(0).entry) {
-      return scene.lighting.getColor(hits.get(0), scene, origin);
+      if (hits.size() > 0 && hits.get(0).entry) {
+        RayHit hit = hits.get(0);
+
+        // initialize reflection ray using scene camera. Not sure if this is correct.
+        reflectionR = new Ray(scene.camera, scene.view);
+        color displayedColor = scene.lighting.getColor(hit, scene, origin);
+
+        while (scene.reflections > 0 && i < scene.reflections && hits.size() > 0) {
+
+          // Calculating reflection ray
+          PVector V = PVector.sub(reflectionR.origin, hit.location).normalize();
+          PVector normalTimes2 = PVector.mult(hit.normal, 2);
+          float nDotV = PVector.dot(hit.normal, V);
+          PVector R = PVector.sub(PVector.mult(normalTimes2, nDotV), V);
+
+          reflectionR = new Ray(PVector.add(hit.location, PVector.mult(R, EPS)), R);
+
+          // Perfect reflection, we don't need surface color just reflection ray
+          if (hit.material.properties.reflectiveness >= 1) {
+            hits = scene.root.intersect(reflectionR);
+          }
+          // Reflection between 0 and 1
+          else if (hit.material.properties.reflectiveness > 0) {
+            displayedColor = lerpColor(color(0), scene.lighting.getColor(hit, scene, origin), displayedColor);
+            hits = scene.root.intersect(reflectionR);
+          }
+          // No reflection at all, don't use ray (and don't shoot any), just use surface color
+          else {
+            displayedColor = lerpColor(color(0), scene.lighting.getColor(hit, scene, origin), displayedColor);
+            break;
+          }
+          i++;
+       }
+
+       return displayedColor;
     }
 
-        /// this will be the fallback case
-        return this.scene.background;
+      /// this will be the fallback case
+      return this.scene.background;
     }
 }
