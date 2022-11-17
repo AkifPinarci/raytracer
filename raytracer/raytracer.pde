@@ -1,4 +1,4 @@
-String input =  "data/tests/milestone3/test10.json";
+String input =  "data/tests/milestone3/test12.json";
 String output = "data/tests/milestone1/test1.png";
 int repeat = 0;
 
@@ -226,10 +226,10 @@ class RayTracer
             
             if(reflectiveness > 0 && hits.size() != 0)
             {
-              displayedColor = lerpColor(displayedColor, scene.lighting.getColor(hits.get(0), scene, reflectedRay.origin), reflectiveness);
+              displayedColor = lerpColor(displayedColor, this.scene.lighting.getColor(hits.get(0), scene, reflectedRay.origin), reflectiveness);
             }
-            else if(reflectiveness == 0 || hits.size() == 0){
-              return displayedColor;
+            else if(reflectiveness > 0 || hits.size() == 0){
+                displayedColor = lerpColor(displayedColor, this.scene.background, reflectiveness);
             }
             else{
               return displayedColor;
