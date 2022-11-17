@@ -229,7 +229,7 @@ class RayTracer
               displayedColor = lerpColor(displayedColor, this.scene.lighting.getColor(hits.get(0), scene, reflectedRay.origin), reflectiveness);
             }
             else if(reflectiveness > 0 || hits.size() == 0){
-                displayedColor = lerpColor(displayedColor, this.scene.background, reflectiveness);
+              displayedColor = lerpColor(displayedColor, this.scene.background, reflectiveness);
             }
             else{
               return displayedColor;
