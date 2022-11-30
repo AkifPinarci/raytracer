@@ -49,7 +49,6 @@ class Sphere implements SceneObject
             float uX = 0.5 + (float)(Math.atan2(normalAtExit.y, normalAtExit.x)/(2*Math.PI));
             float vX = 0.5 - (float)(Math.asin(normalAtExit.z)/Math.PI);
             
-            
             //
             RayHit entryHit = new RayHit();
             entryHit.t = distanceToEntry;
