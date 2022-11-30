@@ -41,7 +41,15 @@ class Sphere implements SceneObject
             PVector normalAtExit = PVector.sub(exitPoint, this.center).normalize();
             // Assign each value to different hits, add them to result and return it
             
-
+            // Calculate u and v values for entry and exit hits
+            
+            float uE = 0.5 + (float)(Math.atan2(normalAtEntry.y, normalAtEntry.x)/(2*Math.PI));
+            float vE = 0.5 - (float)(Math.asin(normalAtEntry.z)/Math.PI);
+            
+            float uX = 0.5 + (float)(Math.atan2(normalAtExit.y, normalAtExit.x)/(2*Math.PI));
+            float vX = 0.5 - (float)(Math.asin(normalAtExit.z)/Math.PI);
+            
+            
             //
             RayHit entryHit = new RayHit();
             entryHit.t = distanceToEntry;
@@ -49,6 +57,8 @@ class Sphere implements SceneObject
             entryHit.normal = normalAtEntry;
             entryHit.material = this.material;
             entryHit.entry = true;
+            entryHit.u = uE;
+            entryHit.v = vE; 
             
             
             RayHit exitHit = new RayHit();
@@ -57,6 +67,9 @@ class Sphere implements SceneObject
             exitHit.normal = normalAtExit;
             exitHit.material = this.material;
             exitHit.entry = false;
+            
+            exitHit.u = uX;
+            exitHit.v = vX;
             
             // Add RayHit objects to the resulting array add entry first than add exit
 
@@ -93,47 +106,158 @@ class Plane implements SceneObject
        // remove this line when you implement planes
     }
     
+    
     ArrayList<RayHit> intersect(Ray r)
     {
         ArrayList<RayHit> result = new ArrayList<RayHit>();
-        float side = PVector.dot(r.direction,this.normal);
+        float side = PVector.dot(PVector.sub(r.direction, this.center), this.normal);
         float originToHit = PVector.dot(PVector.sub(this.center, r.origin),this.normal);
+        float t = originToHit/PVector.dot(r.direction, this.normal);
+        PVector location = PVector.add(r.origin, PVector.mult(r.direction, t));
+        float move = PVector.dot(r.direction, this.normal);
+        
+        RayHit hit = new RayHit();
+        hit.t = t;
+        hit.location = location;
+        hit.material = this.material;
+        
+        // The ray start in the plane
         if(side == 0)
         {
           return result;
         }
-        float t = originToHit/side;
-        if (t < 0)
-        {
-          return result;
-        }
-        else
-        {
-          PVector location = PVector.add(r.origin, PVector.mult(r.direction, t));
-          if(side < 0)
-          {
-            RayHit entry = new RayHit(); 
-            entry.t = t;
-            entry.location = location;
-            entry.normal = normal;
-            entry.entry = true;
-            entry.material = this.material;
-            result.add(entry);
-          }
-          else
-          {
-            RayHit exit = new RayHit(); 
-            exit.t = t;
-            exit.location = location;
-            exit.normal = PVector.mult(this.normal, -1);
-            exit.entry = false;
-            exit.material = material;
-            result.add(exit);
+        
+        // They ray starts in front of the plane
+        else if (side > 0){
+            if (move == 0){
+                hit.t = Float.POSITIVE_INFINITY;
+;
+            }
+            // The ray goes away to plane
+            if (move > 0){
+                return result;
+            }
             
-          }
+            
+            // The ray goes towards from the plane
+            else{
+                hit.normal = normal;
+                hit.entry = true;
+            }
         }
+        
+        // The ray starts behind the plane
+        else{
+            if (move == 0){
+                hit.t = Float.POSITIVE_INFINITY;
+;
+            }
+            // The ray goes towards to plane
+            if (move > 0){
+                hit.normal = PVector.mult(this.normal, -1);
+                hit.entry = false;
+            }
+            
+            
+            // The ray goes away from the plane
+            else{
+                return result;
+            }
+        }
+        
+        
+        // u and v calculations completed here
+        
+        // Define every variable we needed to calculate u and v values
+        PVector xDir = new PVector(1,0,0);
+        PVector yDir = new PVector(0,1,0);
+        PVector zDir = new PVector(0,0,1);
+        PVector d = PVector.sub(hit.location, this.center);
+        
+        if(hit.normal.normalize().equals(zDir)){
+          left = PVector.cross(yDir, hit.normal, this.left).normalize();
+          up = PVector.cross(hit.normal, this.left, this.up).normalize();
+          float x = PVector.dot(d, this.left)/this.scale;
+          float y = PVector.dot(d, this.up)/this.scale;
+          hit.u = -x - floor(-x);
+          hit.v = y - floor(y);
+        }
+        else{
+          left = PVector.cross(zDir, hit.normal, this.left).normalize();
+          up = PVector.cross(hit.normal, this.left, this.up).normalize();
+          float x = PVector.dot(d, this.left)/this.scale;
+          float y = PVector.dot(d, this.up)/this.scale;
+          hit.u = x - floor(x);
+          hit.v = (-y) - floor(-y);
+          
+        }
+        
+        
+        result.add(hit);
         return result;
+          //if(side < 0)
+          //{
+          //  RayHit entry = new RayHit(); 
+          //  entry.t = t;
+          //  entry.location = location;
+          //  entry.normal = normal;
+          //  entry.entry = true;
+          //  entry.material = this.material;
+          //  result.add(entry);
+          //}
+          //else
+          //{
+          //  RayHit exit = new RayHit(); 
+          //  exit.t = t;
+          //  exit.location = location;
+          //  exit.normal = PVector.mult(this.normal, -1);
+          //  exit.entry = false;
+          //  exit.material = material;
+          //  result.add(exit);
+            
+          //}
     }
+    //ArrayList<RayHit> intersect(Ray r)
+    //{
+    //    ArrayList<RayHit> result = new ArrayList<RayHit>();
+    //    float side = PVector.dot(r.direction,this.normal);
+    //    float originToHit = PVector.dot(PVector.sub(this.center, r.origin),this.normal);
+    //    if(side == 0)
+    //    {
+    //      return result;
+    //    }
+    //    float t = originToHit/side;
+    //    if (t < 0)
+    //    {
+    //      return result;
+    //    }
+    //    else
+    //    {
+    //      PVector location = PVector.add(r.origin, PVector.mult(r.direction, t));
+    //      if(side < 0)
+    //      {
+    //        RayHit entry = new RayHit(); 
+    //        entry.t = t;
+    //        entry.location = location;
+    //        entry.normal = normal;
+    //        entry.entry = true;
+    //        entry.material = this.material;
+    //        result.add(entry);
+    //      }
+    //      else
+    //      {
+    //        RayHit exit = new RayHit(); 
+    //        exit.t = t;
+    //        exit.location = location;
+    //        exit.normal = PVector.mult(this.normal, -1);
+    //        exit.entry = false;
+    //        exit.material = material;
+    //        result.add(exit);
+            
+    //      }
+    //    }
+    //    return result;
+    //}
 }
 
 class Triangle implements SceneObject
