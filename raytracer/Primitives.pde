@@ -305,10 +305,17 @@ class Triangle implements SceneObject
         float denom = 1 / (dot00 * dot11 - dot01 * dot01);
         float u = (dot11 * dot02 - dot01 * dot12) * denom;
         float v = (dot00 * dot12 - dot01 * dot02) * denom;
+        float t = 1 - (u + v);
+        
+        PVector t1 = PVector.mult(this.tex1, t);
+        PVector t2 = PVector.mult(this.tex2, v);
+        PVector t3 = PVector.mult(this.tex3, u);
+        t1 = PVector.add(t1, PVector.add(t2, t3));
+        
         
         if ((u >= 0) && (v >= 0) && (u + v < 1)){
             RayHit entry = new RayHit();
-            RayHit exit = new RayHit();
+            //RayHit exit = new RayHit();
             
             PVector location = PVector.add(this.v1, PVector.add(PVector.mult(edge0, u), PVector.mult(edge1, v)));
             float distance = PVector.dot(PVector.sub(location, r.origin), PVector.sub(location, r.origin));
@@ -316,20 +323,20 @@ class Triangle implements SceneObject
             entry.location = location;
             entry.normal = PVector.mult(this.normal, 1);
             entry.material = this.material;
-            entry.u = u;
-            entry.v = v;
+            entry.u = t1.x;
+            entry.v = t1.y;
             entry.entry = true;
             
-            exit.t = distance;
-            exit.location = location;
-            exit.normal = PVector.mult(this.normal, -1);
-            exit.material = this.material;
-            exit.u = u;
-            exit.v = v;
-            exit.entry = false;
+            //exit.t = distance;
+            //exit.location = location;
+            //exit.normal = PVector.mult(this.normal, -1);
+            //exit.material = this.material;
+            //exit.u = uAndV.y;
+            //exit.v = uAndV.x;
+            //exit.entry = false;
             
             result.add(entry);
-            result.add(exit);
+            //result.add(exit);
         };
         return result;
     }
