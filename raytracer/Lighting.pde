@@ -43,7 +43,6 @@ class LightingModel
       float intensity = PVector.dot(tolight, hit.normal);
       return lerpColor(color(0), surfacecol, intensity);
     }
-  
 }
 
 class PhongLightingModel extends LightingModel
