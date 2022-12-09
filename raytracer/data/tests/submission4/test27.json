@@ -1,0 +1,42 @@
+{
+   "scene": {"type": "union",
+             "children": [
+             {
+             "type": "triangle",
+             "v1": {"x": -3, "y": 20, "z": -5},
+             "v2": {"x": 15, "y": 15, "z": -8},
+             "v3": {"x": 4, "y": 28, "z": 14},
+             "material": {"type": "textured", "texture": "tests/submission4/eye.jpg", "ka": 0.2, "kd": 0.3, "ks": 0.7, "alpha": 55}
+             },
+             {
+             "type": "triangle",
+             "v1": {"x": -3, "y": 20, "z": -5},
+             "v3": {"x": -15, "y": 23, "z": -8},
+             "v2": {"x": 4, "y": 28, "z": 14},
+             "tex1": {"u": 0.1, "v": 0.8},
+             "tex2": {"u": 0.7, "v": 0.6},
+             "tex3": {"u": 0.1, "v": 0.2},
+             "material": {"type": "textured", "texture": "tests/submission4/eye.jpg", "ka": 0.2, "kd": 0.3, "ks": 0.7, "alpha": 55}
+             },
+             {"type": "intersection",
+             "children":[
+             { 
+             "type": "sphere",
+             "radius": 5,
+             "center": {"x": -8.5, "y": -7, "z": 3},
+             "material": {"ka": 0.2, "kd": 0.3, "ks": 0.7, "alpha": 25, "color": {"g": 255}}
+             },
+             { 
+             "type": "sphere",
+             "radius": 5,
+             "center": {"x": -11.5, "y": -7, "z": 3},
+             "material": {"ka": 0.2, "kd": 0.3, "ks": 0.7, "alpha": 25, "color": {"g": 255}}
+             }]}]
+            },
+   "camera": {"x": 0, "y": 0, "z": 0},
+   "view": {"x": 0, "y": 1, "z": 0},
+   "background": {"red": 0, "green": 0},
+   "fov": 90,
+   "reflections": 0,
+   "lighting": {"type": "phong", "shadows": true, "lights": [{"position": {"x": -28, "y": -55, "z": 4}, "color": {"gray": 128}}]}
+}

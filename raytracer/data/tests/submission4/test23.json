@@ -1,0 +1,18 @@
+{
+   "scene": { 
+             "type": "triangle",
+             "v1": {"x": -3, "y": 20, "z": -5},
+             "v2": {"x": 15, "y": 23, "z": -8},
+             "v3": {"x": 4, "y": 18, "z": 14},
+             "tex1": {"u": 0.3, "v": 0.5},
+             "tex2": {"u": 0.1, "v": 0.7},
+             "tex3": {"u": 1, "v": 0.9},
+             "material": {"type": "textured", "ka": 0.2, "kd": 0.3, "ks": 0.7, "alpha": 55, "color": {"g": 255}}
+            },
+   "camera": {"x": 0, "y": 0, "z": 0},
+   "view": {"x": 0, "y": 1, "z": 0},
+   "background": {"red": 0, "green": 0},
+   "fov": 90,
+   "reflections": 0,
+   "lighting": {"type": "phong", "lights": [{"position": {"x": 16, "y": -2, "z": 0}, "color": {"gray": 128}}]}
+}
