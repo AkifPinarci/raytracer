@@ -1,0 +1,63 @@
+{
+   "scene": {"type": "union",
+             "children":
+           [             
+           {
+             "type": "difference",
+             "a": 
+               {"type": "sphere",
+                "radius": 135,
+                "center": {"x": 70, "y": 350, "z": 0},
+                "material": {"color": {"r": 255}}},
+             "b": 
+               {"type": "union",
+                "children": 
+                [
+                   {"type": "sphere",
+                    "radius": 95,
+                    "center": {"x": 110, "y": 325, "z": 0},
+                    "material": {"type": "textured", "texture": "earth.jpg"}},
+                   {"type": "sphere",
+                    "radius": 60,
+                    "center": {"x": 80, "y": 205, "z": 35},
+                    "material": { "color": {"b": 255}}},
+                   {"type": "sphere",
+                    "radius": 80,
+                    "center": {"x": 80, "y": 405, "z": 35},
+                    "material": {"color": {"r": 255, "b": 255}}}
+                ]
+               }
+            }, 
+            {"type": "difference",
+             "a": 
+               {"type": "sphere",
+                "radius": 345,
+                "center": {"x": -20, "y": 520, "z": 0},
+                "material": {"color": {"r": 255}}},
+             "b": {"type": "sphere",
+                "radius": 270,
+                "center": {"x": 0, "y": 420, "z": 0},
+                "material": {"color": {"g": 255}}}},
+            {"type": "intersection",
+                "children": 
+                [
+                   {"type": "sphere",
+                    "radius": 40,
+                    "center": {"x": 20, "y": 80, "z": 0},
+                    "material": {"transparency": 0.9, "refractionIndex": 1.33, "color": {"gray": 255}}},
+                   {"type": "sphere",
+                    "radius": 40,
+                    "center": {"x": 15, "y": 50, "z": 10},
+                    "material": {"transparency": 0.9, "refractionIndex": 1.33, "color": {"gray": 255}}}
+                ]
+               }
+            ],
+            
+            },
+    "reflections": 5,
+    "lighting": {"type": "phong", "ambient": {"color": 128}, "shadows": true,
+                "lights": [
+                           {"position": {"x": 250, "y": 90, "z": 0}, "color": {"r": 255, "b": 255}},
+                           {"position": {"x": -100, "y": -30, "z": 0}, "color": {"g": 255}}
+                          ]}
+}

@@ -1,0 +1,40 @@
+{
+    "scene": {
+        "type": "moverotation",
+        "rotation": {
+            "z": 10,
+            "x": 0,
+            "y": 0
+        },
+        "child": {
+            "type": "triangle",
+            "v1": {
+                "x": -100,
+                "y": 200,
+                "z": -100
+            },
+            "v2": {
+                "x": 100,
+                "y": 200,
+                "z": -100
+            },
+            "v3": {
+                "x": 100,
+                "y": 200,
+                "z": 100
+            },
+            "material": { "color": { "r": 225 } }
+        },
+    },
+    "lighting": {
+        "lights": [
+            {
+                "position": {
+                    "x": 0,
+                    "y": -5,
+                    "z": 0
+                }
+            }
+        ]
+    }
+}

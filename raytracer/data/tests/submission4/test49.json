@@ -1,0 +1,21 @@
+{
+   "scene": 
+        {"type": "difference",
+         "a": 
+        {"type": "intersection",
+         "children": [
+           {"type": "hyperboloidone",
+            "radius": 22,
+            "center": {"x": 15, "z": 11.5, "y": 2}},
+           {"type": "sphere",
+            "radius": 22,
+            "center": {"z": -7.5}}
+         ]},
+        "b": {"type": "moverotation", "translation": {"x": -0.5, "y": -0.5}, "rotation": {"y": 30, "x": 25}, "child": {"type": "cylinder", "radius": 5,
+		 "scale": 15,
+             "material": {"type": "textured", "texture":"earth.jpg"}}}},
+   "camera": {"x": 0, "y": -25, "z": 0},
+   "view": {"x": 0, "y": 1, "z": 0.3},
+   "background": {"r": 128, "g": 128, "b": 128},
+   "lighting": {"type": "basic", "lights": [{"position": {"y": -25}, "color": {"gray": 128}}]}
+}

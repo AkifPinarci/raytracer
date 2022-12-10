@@ -1,0 +1,23 @@
+{
+   "scene": {"type": "union",
+             "children": [
+           {
+             "type": "difference",
+             "a": 
+               {"type": "sphere",
+                "radius": 120,
+                "center": {"x": -40, "y": 250, "z": 0},
+                "material": { "color": {"r": 255}}},
+             "b":  {"type": "sphere",
+                "radius": 60,
+                "center": {"x": -30, "y": 150, "z": 0},
+                "material": {"reflectiveness": 0.5, "type": "textured", "texture": "tests/submission4/eye.jpg","color": {"g": 255}}}
+            },
+            {"type": "sphere",
+                "radius": 120,
+                "center": {"x": -40, "y": -150, "z": 0},
+                "material": { "color": {"g": 255}}}
+            
+            ]},
+    "reflections": 1,
+}
